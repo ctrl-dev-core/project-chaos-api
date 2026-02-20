@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['eslint.config.mjs'],
+    ignores: ['dist/**', 'node_modules/**', 'generated/**', 'eslint.config.mjs'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -17,7 +17,7 @@ export default tseslint.config(
         ...globals.node,
         ...globals.jest,
       },
-      sourceType: 'commonjs',
+      sourceType: 'module',
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
@@ -26,10 +26,28 @@ export default tseslint.config(
   },
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
-    },
+  // --- SEGURIDAD ASÍNCRONA (Crítico para Prisma) ---
+  '@typescript-eslint/no-floating-promises': 'error', // No dejes promesas "volando"
+  '@typescript-eslint/await-thenable': 'error',       // No uses await en lo que no es promesa
+  '@typescript-eslint/no-misused-promises': 'error',   // No uses promesas donde no van
+
+  // --- CALIDAD DE CÓDIGO ---
+  '@typescript-eslint/no-explicit-any': 'warn',       // Intenta tipar todo, pero permite 'any' con aviso
+  '@typescript-eslint/no-unused-vars': ['warn', { 
+    argsIgnorePattern: '^_', 
+    varsIgnorePattern: '^_' 
+  }], // Permite variables sin usar si empiezan con guion bajo (ej: _req)
+  
+  'no-console': 'warn',                               // Usa Logger de NestJS en su lugar
+  'eqeqeq': ['error', 'always'],                      // Comparaciones estrictas siempre
+  'curly': 'error',                                   // Siempre usa llaves en ifs/loops
+
+  // --- PRETTIER & FORMATO ---
+  'prettier/prettier': ['warn', { 
+    endOfLine: 'auto',
+    singleQuote: true,                                // Estándar en NestJS
+    trailingComma: 'all',
+  }],
+},
   },
 );

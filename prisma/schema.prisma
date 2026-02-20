@@ -1,0 +1,112 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  
+}
+
+// 1. Planes de Estudio (Antiguo vs Nuevo)
+model StudyPlan {
+  id          Int       @id @default(autoincrement())
+  name        String    // Ej: "Plan 1998" o "Plan 2024"
+  isActive    Boolean   @default(true)
+  mentions    Mention[]
+}
+
+// 2. Menciones
+model Mention {
+  id          Int                 @id @default(autoincrement())
+  name        String              // Ej: "Ingeniería de Sistemas"
+  planId      Int
+  plan        StudyPlan           @relation(fields: [planId], references: [id])
+  subjects    CurriculumSubject[]
+}
+
+// 3. El "Concepto" de la Materia (Nombre base)
+model Subject {
+  id                Int                 @id @default(autoincrement())
+  name              String              // Ej: "Inteligencia Artificial"
+  curriculumEntries CurriculumSubject[]
+}
+
+// 4. La materia DENTRO de una mención (Aquí vive la Sigla)
+model CurriculumSubject {
+  id          Int       @id @default(autoincrement())
+  sigla       String    // Ej: "INF-111" o "DAT-245"
+  semester    Int       // Nivel/Semestre en el que se dicta
+  mentionId   Int
+  subjectId   Int
+  
+  mention     Mention   @relation(fields: [mentionId], references: [id])
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+  
+  // Relación Autoreferenciada para Prerequisitos
+  prerequisites Prerequisite[] @relation("SubjectPrereq")
+  neededFor     Prerequisite[] @relation("PrereqFor")
+
+  parallels   Parallel[]
+
+  @@unique([sigla, mentionId]) // Evita duplicar siglas en la misma mención
+}
+
+// 5. Tabla de Prerequisitos
+model Prerequisite {
+  id                  Int               @id @default(autoincrement())
+  subjectId           Int
+  prerequisiteId      Int
+
+  subject             CurriculumSubject @relation("SubjectPrereq", fields: [subjectId], references: [id])
+  prerequisiteSubject CurriculumSubject @relation("PrereqFor", fields: [prerequisiteId], references: [id])
+}
+
+// 6. Paralelos
+model Parallel {
+  id                  Int               @id @default(autoincrement())
+  letter              String            // Ej: "A", "B", "C"
+  curriculumSubjectId Int
+  professorId         Int
+
+  subject             CurriculumSubject @relation(fields: [curriculumSubjectId], references: [id])
+  professor           Professor         @relation(fields: [professorId], references: [id])
+  schedules           Schedule[]
+}
+
+// 7. Docentes
+model Professor {
+  id        Int        @id @default(autoincrement())
+  name      String
+  parallels Parallel[]
+}
+
+// 8. Aulas
+model Classroom {
+  id        Int        @id @default(autoincrement())
+  name      String     // Ej: "Aula 101", "Lab 1"
+  schedules Schedule[]
+}
+
+// 9. Horarios
+model Schedule {
+  id          Int       @id @default(autoincrement())
+  day         Day
+  startTime   String    // Ej: "08:00"
+  endTime     String    // Ej: "10:00"
+  parallelId  Int
+  classroomId Int
+
+  parallel    Parallel  @relation(fields: [parallelId], references: [id])
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+}
+
+enum Day {
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
+  SABADO
+}
