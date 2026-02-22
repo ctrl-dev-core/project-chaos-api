@@ -1,4 +1,4 @@
-# 🎓 Project Chaos API
+#  Project Chaos API
 
 > API pública de materias de la carrera de Informática — Comunidad **ctrl dev**
 
@@ -10,7 +10,7 @@
 
 ---
 
-## 📋 Tabla de Contenidos
+##  Tabla de Contenidos
 
 - [Descripción](#-descripción)
 - [Tech Stack](#-tech-stack)
@@ -30,13 +30,13 @@
 
 ---
 
-## 📖 Descripción
+##  Descripción
 
 **Project Chaos API** es una API REST desarrollada con [NestJS](https://nestjs.com/) que expone información pública sobre las materias, planes de estudio, horarios y docentes de la carrera de Informática. Es un proyecto de la comunidad **ctrl dev** orientado a facilitar el acceso a datos académicos de manera programática.
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Tecnología | Versión | Descripción |
 |---|---|---|
@@ -56,7 +56,7 @@
 
 ---
 
-## 📌 Requisitos Previos
+##  Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado:
 
@@ -87,11 +87,7 @@ Copia el archivo de ejemplo `.env.sample` a `.env`:
 cp .env.sample .env
 ```
 
-El archivo `.env` contiene la cadena de conexión a la base de datos. Por defecto viene configurado para el contenedor Docker local:
-
-```env
-DATABASE_URL="postgresql://admin:password123@localhost:5432/chaos_api_db?schema=public"
-```
+El archivo `.env` contiene la cadena de conexión a la base de datos. Por defecto viene configurado para el contenedor Docker local.
 
 > ⚠️ **Importante:** El archivo `.env` está incluido en `.gitignore` y **nunca** debe subirse al repositorio. Cada desarrollador debe crear su propia copia local.
 
@@ -106,7 +102,7 @@ pnpm install
 ### 4. Levantar la base de datos con Docker
 
 ```bash
-docker compose up -d
+docker-compose up -d
 ```
 
 Esto levanta un contenedor con **PostgreSQL 16 Alpine** con la siguiente configuración:
@@ -133,7 +129,7 @@ pnpm run prisma:migrate
 
 ---
 
-## ▶️ Ejecutar el Proyecto
+##  Ejecutar el Proyecto
 
 ### Modo desarrollo (con hot-reload)
 
@@ -152,7 +148,7 @@ pnpm run start:prod
 
 ---
 
-## 🗄 Base de Datos (Prisma)
+##  Base de Datos (Prisma)
 
 El proyecto utiliza **Prisma ORM** para gestionar la base de datos. El schema se encuentra en `prisma/schema.prisma` y la configuración en `prisma.config.ts`.
 
@@ -176,17 +172,17 @@ Esto abrirá una interfaz web donde puedes visualizar y editar los datos.
 
 ---
 
-## 📚 Documentación API (Swagger)
+##  Documentación API (Swagger)
 
 La documentación interactiva de la API está disponible automáticamente cuando el servidor está corriendo:
 
-🔗 **http://localhost:3000/docs**
+ **http://localhost:3000/docs**
 
 Aquí puedes explorar todos los endpoints disponibles, ver los esquemas de datos y probar las peticiones directamente desde el navegador.
 
 ---
 
-## 📜 Scripts Disponibles
+##  Scripts Disponibles
 
 | Script | Comando | Descripción |
 |---|---|---|
@@ -209,7 +205,7 @@ Aquí puedes explorar todos los endpoints disponibles, ver los esquemas de datos
 
 ---
 
-## 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 project-chaos-api/
@@ -248,88 +244,7 @@ project-chaos-api/
 
 ---
 
-## 🗃 Modelo de Datos
-
-El esquema de la base de datos modela un sistema de gestión curricular universitario:
-
-```mermaid
-erDiagram
-    StudyPlan ||--o{ Mention : "tiene"
-    Mention ||--o{ CurriculumSubject : "contiene"
-    Subject ||--o{ CurriculumSubject : "aparece en"
-    CurriculumSubject ||--o{ Prerequisite : "tiene prerequisitos"
-    CurriculumSubject ||--o{ Parallel : "tiene paralelos"
-    Professor ||--o{ Parallel : "dicta"
-    Parallel ||--o{ Schedule : "tiene horarios"
-    Classroom ||--o{ Schedule : "se usa en"
-
-    StudyPlan {
-        int id PK
-        string name
-        boolean isActive
-    }
-    Mention {
-        int id PK
-        string name
-        int planId FK
-    }
-    Subject {
-        int id PK
-        string name
-    }
-    CurriculumSubject {
-        int id PK
-        string sigla
-        int semester
-        int mentionId FK
-        int subjectId FK
-    }
-    Prerequisite {
-        int id PK
-        int subjectId FK
-        int prerequisiteId FK
-    }
-    Parallel {
-        int id PK
-        string letter
-        int curriculumSubjectId FK
-        int professorId FK
-    }
-    Professor {
-        int id PK
-        string name
-    }
-    Classroom {
-        int id PK
-        string name
-    }
-    Schedule {
-        int id PK
-        enum day
-        string startTime
-        string endTime
-        int parallelId FK
-        int classroomId FK
-    }
-```
-
-### Entidades principales
-
-| Modelo | Descripción |
-|---|---|
-| **StudyPlan** | Planes de estudio (ej: "Plan 1998", "Plan 2024") |
-| **Mention** | Menciones dentro de un plan (ej: "Ingeniería de Sistemas") |
-| **Subject** | Concepto base de una materia (ej: "Inteligencia Artificial") |
-| **CurriculumSubject** | Materia dentro de una mención, con su sigla y semestre |
-| **Prerequisite** | Relación de prerequisitos entre materias |
-| **Parallel** | Paralelos de una materia (A, B, C...) |
-| **Professor** | Docentes que dictan los paralelos |
-| **Classroom** | Aulas disponibles |
-| **Schedule** | Horarios de los paralelos (día, hora, aula) |
-
----
-
-## 📝 Conventional Commits con Commitizen
+##  Conventional Commits con Commitizen
 
 Este proyecto sigue el estándar de [Conventional Commits](https://www.conventionalcommits.org/) para mantener un historial de cambios limpio y consistente. Para facilitar esto, usamos **Commitizen** junto con **CommitLint** y **Husky**.
 
@@ -388,7 +303,7 @@ Los siguientes hooks se ejecutan automáticamente:
 
 ---
 
-## 🧹 Linting y Formateo de Código
+##  Linting y Formateo de Código
 
 ### ESLint
 
@@ -423,7 +338,7 @@ pnpm run format
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 El proyecto usa **Jest** como framework de testing.
 
