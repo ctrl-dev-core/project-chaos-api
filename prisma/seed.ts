@@ -8,6 +8,7 @@ import {
   PrismaClient,
   Semestre,
 } from 'generated/prisma/client';
+import { listaDocentes } from 'src/common/constants';
 
 dotenv.config();
 
@@ -36,7 +37,7 @@ async function main() {
     { id_plan: 7, nombre: 'Seguridad de la Información' },
   ];
 
-  Promise.all(
+  await Promise.all(
     planes.map((item: Plan, index: number) =>
       prisma.plan.upsert({
         where: { id_plan: item.id_plan },
@@ -100,7 +101,7 @@ async function main() {
     },
   ];
 
-  Promise.all(
+  await Promise.all(
     semestres.map((item: Semestre, index: number) =>
       prisma.semestre.upsert({
         where: { id_semestre: item.id_semestre },
@@ -111,43 +112,15 @@ async function main() {
   ).then(() => console.log('- Semestres insertados'));
 
   // ? Insertando datos de docentes
-  const docentes: Docente[] = [
-    {
-      id_docente: 1,
-      nombre: 'Dr. Juan Pérez',
-      correo: 'juan.perez@universidad.edu',
-    },
-    {
-      id_docente: 2,
-      nombre: 'Dra. María García',
-      correo: 'maria.garcia@universidad.edu',
-    },
-    {
-      id_docente: 3,
-      nombre: 'M.Sc. Carlos López',
-      correo: 'carlos.lopez@universidad.edu',
-    },
-    {
-      id_docente: 4,
-      nombre: 'Ing. Ana Martínez',
-      correo: 'ana.martinez@universidad.edu',
-    },
-    {
-      id_docente: 5,
-      nombre: 'Dr. Roberto Sánchez',
-      correo: 'roberto.sanchez@universidad.edu',
-    },
-  ];
-
-  Promise.all(
-    docentes.map(async (docente) => {
+  await Promise.all(
+    listaDocentes.map(async (docente) => {
       await prisma.docente.upsert({
         where: { id_docente: docente.id_docente },
         update: {},
         create: docente,
       });
     }),
-  ).then(() => console.log('✅ Docentes insertados'));
+  ).then(() => console.log('- Docentes insertados'));
 
   // ? Insertando datos de materias
   const materias: Materia[] = [
@@ -167,7 +140,7 @@ async function main() {
     },
   ];
 
-  Promise.all(
+  await Promise.all(
     materias.map((materia: Materia) =>
       prisma.materia.upsert({
         where: { id_materia: materia.id_materia },
@@ -175,7 +148,7 @@ async function main() {
         create: materia,
       }),
     ),
-  ).then(() => console.log('✅ Materias insertadas'));
+  ).then(() => console.log('- Materias insertadas'));
 
   // ? Insertando datos de horarios
   const horarios: Horario[] = [
@@ -199,7 +172,7 @@ async function main() {
     },
   ];
 
-  Promise.all(
+  await Promise.all(
     horarios.map((horario: Horario) =>
       prisma.horario.upsert({
         where: { id_horario: horario.id_horario },
@@ -207,9 +180,9 @@ async function main() {
         create: horario,
       }),
     ),
-  ).then(() => console.log('✅ Horarios insertados'));
+  ).then(() => console.log('- Horarios insertados'));
 
-  console.log('✅ Base de datos sembrada correctamente');
+  console.log('- Base de datos sembrada correctamente');
 }
 
 main()

@@ -3,10 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PlanesModule } from './planes/planes.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { DocentesModule } from './docentes/docente.module';
 
 //TODO: add prisma module
 @Module({
-  imports: [PrismaModule, PlanesModule],
+  imports: [PrismaModule, DocentesModule, PlanesModule],
   controllers: [AppController],
   providers: [AppService],
 })
