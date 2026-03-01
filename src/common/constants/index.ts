@@ -1,4 +1,4 @@
-import { Docente, Plan } from 'generated/prisma/client';
+import { Docente, Plan, Semestre } from 'generated/prisma/client';
 
 export const listaDocentes: Docente[] = [
   {
@@ -404,4 +404,57 @@ export const listaPlanes: Plan[] = [
   { id_plan: 5, nombre: 'Ingeniería de Sistemas' },
   { id_plan: 6, nombre: 'Redes y TIC' },
   { id_plan: 7, nombre: 'Seguridad de la Información' },
+];
+
+export const listaSemestres: Semestre[] = [
+  {
+    id_semestre: 1,
+    numero: 1,
+    nombre: 'Primer semestre',
+  },
+  {
+    id_semestre: 2,
+    numero: 2,
+    nombre: 'Segundo semestre',
+  },
+  {
+    id_semestre: 3,
+    numero: 3,
+    nombre: 'Tercer semestre',
+  },
+  {
+    id_semestre: 4,
+    numero: 4,
+    nombre: 'Cuarto semestre',
+  },
+  {
+    id_semestre: 5,
+    numero: 5,
+    nombre: 'Quinto semestre',
+  },
+  {
+    id_semestre: 6,
+    numero: 6,
+    nombre: 'Sexto semestre',
+  },
+  {
+    id_semestre: 7,
+    numero: 7,
+    nombre: 'Septimo semestre',
+  },
+  {
+    id_semestre: 8,
+    numero: 8,
+    nombre: 'Octavo semestre',
+  },
+  {
+    id_semestre: 9,
+    numero: 9,
+    nombre: 'Noveno semestre',
+  },
+  {
+    id_semestre: 10,
+    numero: 10,
+    nombre: 'Decimo semestre',
+  },
 ];
