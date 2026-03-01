@@ -8,7 +8,7 @@ import {
   PrismaClient,
   Semestre,
 } from 'generated/prisma/client';
-import { listaDocentes } from 'src/common/constants';
+import { listaDocentes, listaPlanes } from 'src/common/constants';
 
 dotenv.config();
 
@@ -24,21 +24,8 @@ async function main() {
   console.log('🌱 Sembrando base de datos...');
 
   // ? Insertando datos de planes
-  const planes: Plan[] = [
-    {
-      id_plan: 1,
-      nombre: 'Desarrollo de Software e Innovación Tecnológica',
-    },
-    { id_plan: 2, nombre: 'IA y Ciencias de Datos' },
-    { id_plan: 3, nombre: 'Ciencias de la Computación' },
-    { id_plan: 4, nombre: 'Informática Industrial' },
-    { id_plan: 5, nombre: 'Ingeniería de Sistemas' },
-    { id_plan: 6, nombre: 'Redes y TIC' },
-    { id_plan: 7, nombre: 'Seguridad de la Información' },
-  ];
-
   await Promise.all(
-    planes.map((item: Plan, index: number) =>
+    listaPlanes.map((item: Plan, index: number) =>
       prisma.plan.upsert({
         where: { id_plan: item.id_plan },
         update: {},

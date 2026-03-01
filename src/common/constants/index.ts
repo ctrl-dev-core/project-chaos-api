@@ -1,4 +1,4 @@
-import { Docente } from 'generated/prisma/client';
+import { Docente, Plan } from 'generated/prisma/client';
 
 export const listaDocentes: Docente[] = [
   {
@@ -391,4 +391,17 @@ export const listaDocentes: Docente[] = [
     nombre: 'Sin Docente',
     correo: null,
   },
+];
+
+export const listaPlanes: Plan[] = [
+  {
+    id_plan: 1,
+    nombre: 'Desarrollo de Software e Innovación Tecnológica',
+  },
+  { id_plan: 2, nombre: 'IA y Ciencias de Datos' },
+  { id_plan: 3, nombre: 'Ciencias de la Computación' },
+  { id_plan: 4, nombre: 'Informática Industrial' },
+  { id_plan: 5, nombre: 'Ingeniería de Sistemas' },
+  { id_plan: 6, nombre: 'Redes y TIC' },
+  { id_plan: 7, nombre: 'Seguridad de la Información' },
 ];
