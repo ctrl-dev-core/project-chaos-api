@@ -9,6 +9,16 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
+  const port = process.env.PORT || 3000;
+  const host = process.env.HOST || '0.0.0.0';
+  const originFront = process.env.FRONTEND_URL || 'http://localhost:3030';
+
+  // ? Cors configuration
+  app.enableCors({
+    origin: [originFront],
+    credentials: true,
+  });
+
   // ? Pipes for validation
   app.useGlobalPipes(
     new ValidationPipe({
@@ -36,8 +46,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(3000);
-  logger.log(`Application is running on: ${await app.getUrl()}`);
+  await app.listen(port, host);
+  console.info(`Application is running on http://${host}:${port}`);
+  console.info(`Swagger documentation on http://${host}:${port}/docs`);
 }
 bootstrap().catch((err) => {
   const logger = new Logger('Bootstrap');
