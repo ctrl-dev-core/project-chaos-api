@@ -39,6 +39,7 @@ model Materia {
   id_plan          Int
   id_semestre      Int
   id_prerrequisito Int?
+  sigla            String
 
   plan          Plan      @relation(fields: [id_plan], references: [id_plan])
   semestre      Semestre  @relation(fields: [id_semestre], references: [id_semestre])

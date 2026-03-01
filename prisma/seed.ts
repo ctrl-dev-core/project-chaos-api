@@ -10,6 +10,7 @@ import {
 } from 'generated/prisma/client';
 import {
   listaDocentes,
+  listaMaterias,
   listaPlanes,
   listaSemestres,
 } from 'src/common/constants';
@@ -61,25 +62,8 @@ async function main() {
   ).then(() => console.log('- Docentes insertados'));
 
   // ? Insertando datos de materias
-  const materias: Materia[] = [
-    {
-      id_materia: 1,
-      id_plan: 1,
-      id_semestre: 1,
-      id_prerrequisito: null,
-      nombre: 'Programación I',
-    },
-    {
-      id_materia: 2,
-      id_plan: 1,
-      id_semestre: 1,
-      id_prerrequisito: 1,
-      nombre: 'Programación II',
-    },
-  ];
-
   await Promise.all(
-    materias.map((materia: Materia) =>
+    listaMaterias.map((materia: Materia) =>
       prisma.materia.upsert({
         where: { id_materia: materia.id_materia },
         update: {},

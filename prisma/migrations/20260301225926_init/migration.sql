@@ -25,6 +25,7 @@ CREATE TABLE "materia" (
     "id_plan" INTEGER NOT NULL,
     "id_semestre" INTEGER NOT NULL,
     "id_prerrequisito" INTEGER,
+    "sigla" TEXT NOT NULL,
     CONSTRAINT "materia_id_plan_fkey" FOREIGN KEY ("id_plan") REFERENCES "plan" ("id_plan") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "materia_id_semestre_fkey" FOREIGN KEY ("id_semestre") REFERENCES "semestre" ("id_semestre") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "materia_id_prerrequisito_fkey" FOREIGN KEY ("id_prerrequisito") REFERENCES "materia" ("id_materia") ON DELETE SET NULL ON UPDATE CASCADE
