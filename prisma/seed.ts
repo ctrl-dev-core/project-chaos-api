@@ -10,6 +10,7 @@ import {
 } from 'generated/prisma/client';
 import {
   listaDocentes,
+  listaHorarios,
   listaMaterias,
   listaPlanes,
   listaSemestres,
@@ -73,29 +74,8 @@ async function main() {
   ).then(() => console.log('- Materias insertadas'));
 
   // ? Insertando datos de horarios
-  const horarios: Horario[] = [
-    {
-      id_horario: 1,
-      id_materia: 1,
-      id_docente: 1,
-      dia: 'Lunes',
-      hora_inicio: '10:00',
-      hora_fin: '12:00',
-      paralelo: 'A',
-    },
-    {
-      id_horario: 2,
-      id_materia: 2,
-      id_docente: 2,
-      dia: 'Martes',
-      hora_inicio: '14:00',
-      hora_fin: '16:00',
-      paralelo: 'B',
-    },
-  ];
-
   await Promise.all(
-    horarios.map((horario: Horario) =>
+    listaHorarios.map((horario: Horario) =>
       prisma.horario.upsert({
         where: { id_horario: horario.id_horario },
         update: {},

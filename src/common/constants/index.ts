@@ -1,4 +1,10 @@
-import { Docente, Materia, Plan, Semestre } from 'generated/prisma/client';
+import {
+  Docente,
+  Horario,
+  Materia,
+  Plan,
+  Semestre,
+} from 'generated/prisma/client';
 
 export const listaDocentes: Docente[] = [
   {
@@ -475,5 +481,26 @@ export const listaMaterias: Materia[] = [
     id_prerrequisito: 1,
     nombre: 'Programación II',
     sigla: 'INF-112',
+  },
+];
+
+export const listaHorarios: Horario[] = [
+  {
+    id_horario: 1,
+    id_materia: 1,
+    id_docente: 1,
+    dia: 'Lunes',
+    hora_inicio: '10:00',
+    hora_fin: '12:00',
+    paralelo: 'A',
+  },
+  {
+    id_horario: 2,
+    id_materia: 2,
+    id_docente: 2,
+    dia: 'Martes',
+    hora_inicio: '14:00',
+    hora_fin: '16:00',
+    paralelo: 'B',
   },
 ];
