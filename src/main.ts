@@ -31,7 +31,6 @@ async function bootstrap() {
       'API pública de materias de la carrera de Informática - Comunidad ctrl dev',
     )
     .setVersion('1.0')
-    .addTag('subjects')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
