@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -6,7 +6,11 @@ export class PlanesService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.plan.findMany({
+    return await this.prisma.plan.findMany();
+  }
+
+  async findSubjects() {
+    return await this.prisma.plan.findMany({
       include: {
         materias: true,
       },
@@ -14,7 +18,7 @@ export class PlanesService {
   }
 
   async findOne(id: number) {
-    return this.prisma.plan.findUnique({
+    const response = await this.prisma.plan.findUnique({
       where: { id_plan: id },
       include: {
         materias: {
@@ -24,11 +28,11 @@ export class PlanesService {
         },
       },
     });
-  }
 
-  async create(data: { nombre: string }) {
-    return this.prisma.plan.create({
-      data,
-    });
+    if (!response) {
+      throw new NotFoundException(`Plan con ID ${id} no encontrado`);
+    }
+
+    return response;
   }
 }

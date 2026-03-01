@@ -22,7 +22,7 @@ import { CreateDocenteDto, UpdateDocenteDto } from './crear-docente.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { IdDto } from 'src/common/dto/basic.dto';
 
-@ApiTags('docentes')
+@ApiTags('Docentes')
 @Controller('docentes')
 export class DocentesController {
   constructor(private readonly docentesService: DocentesService) {}

@@ -16,7 +16,7 @@ import {
 } from '@nestjs/swagger';
 import { CreatePlanDto } from './crear-plan.dto';
 
-@ApiTags('planes')
+@ApiTags('Planes')
 @Controller('planes')
 export class PlanesController {
   constructor(private readonly planesService: PlanesService) {}
@@ -29,6 +29,16 @@ export class PlanesController {
   })
   async findAll() {
     return this.planesService.findAll();
+  }
+
+  @Get('/materias')
+  @ApiOperation({
+    summary: 'Obtener todos los planes de estudio con materias',
+    description:
+      'Retorna una lista completa de todos los planes de estudio disponibles con sus materias',
+  })
+  async findSubjects() {
+    return this.planesService.findSubjects();
   }
 
   @Get(':id')
@@ -44,19 +54,5 @@ export class PlanesController {
   })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.planesService.findOne(id);
-  }
-
-  @Post()
-  @ApiOperation({
-    summary: 'Crear un nuevo plan de estudio',
-    description: 'Crea un nuevo plan de estudio con el nombre proporcionado',
-  })
-  @ApiBody({
-    type: CreatePlanDto,
-    description: 'Datos del plan a crear',
-  })
-  @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  async create(@Body() createPlanDto: CreatePlanDto) {
-    return this.planesService.create(createPlanDto);
   }
 }

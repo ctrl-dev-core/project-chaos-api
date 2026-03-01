@@ -5,9 +5,8 @@ import { PlanesModule } from './planes/planes.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { DocentesModule } from './docentes/docente.module';
 
-//TODO: add prisma module
 @Module({
-  imports: [PrismaModule, DocentesModule, PlanesModule],
+  imports: [PrismaModule, PlanesModule, DocentesModule, PlanesModule],
   controllers: [AppController],
   providers: [AppService],
 })
