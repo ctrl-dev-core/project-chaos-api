@@ -17,8 +17,8 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { HorariosService } from './horarios.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { IdDto } from 'src/common/dto/basic.dto';
+import { PaginationDto } from 'src/core/global/common/dto/pagination.dto';
+import { IdDto } from 'src/core/global/common/dto/basic.dto';
 import { CreateHorarioDto, UpdateHorarioDto } from './crear-horario.dto';
 
 @ApiTags('Horarios')

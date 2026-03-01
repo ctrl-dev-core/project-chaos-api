@@ -1,10 +1,9 @@
-// src/docentes/docentes.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDocenteDto, UpdateDocenteDto } from './crear-docente.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from 'src/core/global/common/dto/pagination.dto';
 import { Docente } from 'generated/prisma/client';
-import { Pagination } from 'src/common/types/pagination.types';
+import { Pagination } from 'src/core/global/common/types/pagination.types';
 
 @Injectable()
 export class DocentesService {

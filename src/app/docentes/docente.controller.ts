@@ -1,4 +1,3 @@
-// src/docentes/docentes.controller.ts
 import {
   Controller,
   Get,
@@ -19,8 +18,8 @@ import {
 } from '@nestjs/swagger';
 import { DocentesService } from './docente.service';
 import { CreateDocenteDto, UpdateDocenteDto } from './crear-docente.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { IdDto } from 'src/common/dto/basic.dto';
+import { PaginationDto } from 'src/core/global/common/dto/pagination.dto';
+import { IdDto } from 'src/core/global/common/dto/basic.dto';
 
 @ApiTags('Docentes')
 @Controller('docentes')

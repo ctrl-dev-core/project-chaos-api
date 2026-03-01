@@ -1,4 +1,3 @@
-// src/materias/dto/create-materia.dto.ts
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {

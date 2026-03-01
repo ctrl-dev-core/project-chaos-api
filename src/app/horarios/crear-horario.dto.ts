@@ -10,7 +10,7 @@ import {
   Matches,
 } from 'class-validator';
 
-//TODO: export in a enum
+// TODO: export in a enum
 const DIAS_VALIDOS = [
   'LUNES',
   'MARTES',

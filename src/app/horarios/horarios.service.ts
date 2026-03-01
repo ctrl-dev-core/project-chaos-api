@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from 'src/core/global/common/dto/pagination.dto';
 import { Horario } from 'generated/prisma/client';
-import { Pagination } from 'src/common/types/pagination.types';
+import { Pagination } from 'src/core/global/common/types/pagination.types';
 import { CreateHorarioDto, UpdateHorarioDto } from './crear-horario.dto';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { SemestresService } from './semestres.service';
-import { IdDto } from 'src/common/dto/basic.dto';
+import { IdDto } from 'src/core/global/common/dto/basic.dto';
 
 @ApiTags('Semestres')
 @Controller('semestres')

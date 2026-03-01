@@ -14,7 +14,7 @@ import {
   listaMaterias,
   listaPlanes,
   listaSemestres,
-} from 'src/common/constants';
+} from 'src/core/global/common/constants';
 
 dotenv.config();
 

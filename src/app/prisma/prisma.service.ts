@@ -1,4 +1,3 @@
-// src/prisma/prisma.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import * as dotenv from 'dotenv';
@@ -12,12 +11,10 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor() {
-    // Crear el adaptador
     const adapter = new PrismaBetterSqlite3({
       url: process.env.DATABASE_URL || 'file:./dev.db',
     });
 
-    // Pasar las opciones correctamente al constructor de PrismaClient
     super({
       adapter,
     });
@@ -25,11 +22,11 @@ export class PrismaService
 
   async onModuleInit() {
     await this.$connect();
-    console.log('✅ Conectado a la base de datos SQLite');
+    console.log('Connection to the database has been established successfully');
   }
 
   async onModuleDestroy() {
     await this.$disconnect();
-    console.log('❌ Desconectado de la base de datos');
+    console.log('Connection to the database has been closed');
   }
 }

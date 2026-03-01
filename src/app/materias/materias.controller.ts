@@ -17,8 +17,8 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { MateriasService } from './materias.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { IdDto } from 'src/common/dto/basic.dto';
+import { PaginationDto } from 'src/core/global/common/dto/pagination.dto';
+import { IdDto } from 'src/core/global/common/dto/basic.dto';
 import { CreateMateriaDto, UpdateMateriaDto } from './crear-materia.dto';
 
 @ApiTags('Materias')
