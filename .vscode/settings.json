@@ -1,0 +1,12 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "Sqlite",
+      "group": "test",
+      "database": "${workspaceFolder:project-chaos-api}/db.sqlite"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
+}

@@ -14,6 +14,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
+    "seed": "tsx prisma/seed.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "build": "nest build",
@@ -35,8 +36,12 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.6",
+    "@prisma/adapter-better-sqlite3": "^7.4.2",
     "@prisma/adapter-pg": "^7.4.1",
     "@prisma/client": "^7.4.1",
+    "better-sqlite3": "^12.6.2",
+    "class-validator": "^0.15.1",
+    "dotenv": "^17.3.1",
     "pg": "^8.18.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -50,6 +55,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
@@ -71,6 +77,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
@@ -103,5 +110,13 @@
   "bugs": {
     "url": "https://github.com/ctrl-dev-core/project-chaos-api/issues"
   },
-  "homepage": "https://github.com/ctrl-dev-core/project-chaos-api#readme"
+  "homepage": "https://github.com/ctrl-dev-core/project-chaos-api#readme",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "prisma",
+      "@prisma/engines",
+      "@nestjs/core"
+    ]
+  }
 }

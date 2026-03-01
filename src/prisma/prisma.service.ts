@@ -1,7 +1,10 @@
+// src/prisma/prisma.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma/client/extension';
-import { Pool } from 'pg';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import * as dotenv from 'dotenv';
+import { PrismaClient } from 'generated/prisma/client';
+
+dotenv.config();
 
 @Injectable()
 export class PrismaService
@@ -9,18 +12,24 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor() {
-    // Configuramos el adaptador para conectar con tu Docker
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
+    // Crear el adaptador
+    const adapter = new PrismaBetterSqlite3({
+      url: process.env.DATABASE_URL || 'file:./dev.db',
+    });
 
-    super({ adapter });
+    // Pasar las opciones correctamente al constructor de PrismaClient
+    super({
+      adapter,
+    });
   }
 
   async onModuleInit() {
     await this.$connect();
+    console.log('✅ Conectado a la base de datos SQLite');
   }
 
   async onModuleDestroy() {
     await this.$disconnect();
+    console.log('❌ Desconectado de la base de datos');
   }
 }
