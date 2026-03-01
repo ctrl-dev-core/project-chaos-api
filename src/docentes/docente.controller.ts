@@ -19,6 +19,8 @@ import {
 } from '@nestjs/swagger';
 import { DocentesService } from './docente.service';
 import { CreateDocenteDto, UpdateDocenteDto } from './crear-docente.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { IdDto } from 'src/common/dto/basic.dto';
 
 @ApiTags('docentes')
 @Controller('docentes')
@@ -37,21 +39,27 @@ export class DocentesController {
 
   @Get()
   @ApiOperation({
-    summary: 'Obtener todos los docentes',
-    description:
-      'Retorna una lista completa de todos los docentes con sus horarios',
+    summary: 'Obtener docentes paginados',
+    description: 'Retorna una lista paginada de docentes con sus horarios',
   })
   @ApiQuery({
     name: 'search',
     required: false,
-    description: 'Buscar docentes por nombre',
-    example: 'Juan',
+    type: String,
+    description: 'Texto para buscar por nombre',
   })
   async findAll(@Query('search') search?: string) {
-    if (search) {
-      return this.docentesService.searchByNombre(search);
-    }
-    return this.docentesService.findAll();
+    return this.docentesService.findAll(search || '');
+  }
+
+  @Get('/pagination')
+  @ApiOperation({
+    summary: 'Obtener todos los docentes con paginación',
+    description:
+      'Retorna una lista completa de todos los docentes con sus horarios',
+  })
+  async findAllList(@Query() pagination: PaginationDto) {
+    return this.docentesService.findAllPaginated(pagination);
   }
 
   @Get(':id')
@@ -60,12 +68,11 @@ export class DocentesController {
     description: 'Retorna un docente específico incluyendo todos sus horarios',
   })
   @ApiParam({
-    name: 'id',
-    description: 'ID del docente',
-    example: 1,
-    type: Number,
+    name: 'Id del docente',
+    type: IdDto,
   })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param() params: IdDto) {
+    const { id } = params;
     return this.docentesService.findOne(id);
   }
 
@@ -88,23 +95,19 @@ export class DocentesController {
     summary: 'Actualizar un docente',
     description: 'Actualiza los datos de un docente existente',
   })
-  @ApiParam({ name: 'id', description: 'ID del docente' })
-  @ApiBody({ type: UpdateDocenteDto })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateDocenteDto: UpdateDocenteDto,
-  ) {
+  @ApiBody({ description: 'Datos del docente', type: UpdateDocenteDto })
+  update(@Param() params: IdDto, @Body() updateDocenteDto: UpdateDocenteDto) {
+    const { id } = params;
     return this.docentesService.update(id, updateDocenteDto);
   }
 
   @Delete(':id')
   @ApiOperation({
     summary: 'Eliminar un docente',
-    description:
-      'Elimina un docente del sistema (solo si no tiene horarios asignados)',
+    description: 'Elimina un docente del sistema',
   })
-  @ApiParam({ name: 'id', description: 'ID del docente' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param() params: IdDto) {
+    const { id } = params;
     return this.docentesService.remove(id);
   }
 }

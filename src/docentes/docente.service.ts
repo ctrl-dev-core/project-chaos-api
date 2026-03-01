@@ -2,19 +2,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDocenteDto, UpdateDocenteDto } from './crear-docente.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Docente } from 'generated/prisma/client';
+import { Pagination } from 'src/common/types/pagination.types';
 
 @Injectable()
 export class DocentesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createDocenteDto: CreateDocenteDto) {
-    return this.prisma.docente.create({
-      data: createDocenteDto,
-    });
+    const docentes = await this.prisma.docente.findMany();
+    return {
+      id_docente: docentes.length + 1,
+      ...createDocenteDto,
+    };
   }
 
-  async findAll() {
-    const docentes = await this.prisma.docente.findMany({
+  async findAll(search: string): Promise<Docente[]> {
+    const response = await this.prisma.docente.findMany({
       include: {
         horarios: {
           include: {
@@ -25,13 +30,59 @@ export class DocentesService {
       orderBy: {
         nombre: 'asc',
       },
+      where: {
+        nombre: {
+          contains: search,
+        },
+      },
     });
 
-    // Transformar la respuesta para incluir el conteo de horarios
-    return docentes.map((docente) => ({
-      ...docente,
-      horariosCount: docente.horarios.length,
-    }));
+    return response;
+  }
+
+  async findAllPaginated(
+    pagination: PaginationDto,
+  ): Promise<Pagination<Docente>> {
+    const { page, size: limit, search } = pagination;
+
+    const skip = (page - 1) * limit;
+
+    const where = search
+      ? {
+          nombre: {
+            contains: search,
+            mode: 'insensitive' as const,
+          },
+        }
+      : {};
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.docente.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          horarios: {
+            include: {
+              materia: true,
+            },
+          },
+        },
+        orderBy: {
+          nombre: 'asc',
+        },
+      }),
+      this.prisma.docente.count({ where }),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      next: page * limit < total ? page + 1 : null,
+      prev: page > 1 ? page - 1 : null,
+    };
   }
 
   async findOne(id: number) {
@@ -59,44 +110,28 @@ export class DocentesService {
     return docente;
   }
 
-  async update(id: number, updateDocenteDto: UpdateDocenteDto) {
-    try {
-      return await this.prisma.docente.update({
-        where: { id_docente: id },
-        data: updateDocenteDto,
-      });
-    } catch (error) {
+  async update(id: number, _updateDocenteDto: UpdateDocenteDto) {
+    const docente: Docente | null = await this.prisma.docente.findFirst({
+      where: { id_docente: id },
+    });
+
+    if (!docente) {
       throw new NotFoundException(`Docente con ID ${id} no encontrado`);
     }
+
+    return docente;
   }
 
   async remove(id: number) {
-    try {
-      // Primero verificar si tiene horarios asignados
-      const docente = await this.prisma.docente.findUnique({
-        where: { id_docente: id },
-        include: {
-          horarios: true,
-        },
-      });
+    const docente: Docente | null = await this.prisma.docente.findFirst({
+      where: { id_docente: id },
+    });
 
-      if (docente?.horarios?.length && docente.horarios.length > 0) {
-        throw new Error(
-          `No se puede eliminar el docente porque tiene ${docente.horarios.length} horarios asignados`,
-        );
-      }
-
-      await this.prisma.docente.delete({
-        where: { id_docente: id },
-      });
-
-      return { message: 'Docente eliminado correctamente' };
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new NotFoundException(error.message);
-      }
+    if (!docente) {
       throw new NotFoundException(`Docente con ID ${id} no encontrado`);
     }
+
+    return docente;
   }
 
   async findHorarios(id: number) {
@@ -122,21 +157,5 @@ export class DocentesService {
     }
 
     return docente.horarios;
-  }
-
-  async searchByNombre(nombre: string) {
-    return this.prisma.docente.findMany({
-      where: {
-        nombre: {
-          contains: nombre,
-        },
-      },
-      include: {
-        horarios: true,
-      },
-      orderBy: {
-        nombre: 'asc',
-      },
-    });
   }
 }
