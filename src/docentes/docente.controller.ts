@@ -67,10 +67,6 @@ export class DocentesController {
     summary: 'Obtener un docente por ID',
     description: 'Retorna un docente específico incluyendo todos sus horarios',
   })
-  @ApiParam({
-    name: 'Id del docente',
-    type: IdDto,
-  })
   findOne(@Param() params: IdDto) {
     const { id } = params;
     return this.docentesService.findOne(id);

@@ -1,4 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
@@ -19,6 +20,7 @@ export class CreateDocenteDto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(100)
+  @Transform(({ value }) => value?.toUpperCase())
   nombre: string;
 
   @ApiProperty({

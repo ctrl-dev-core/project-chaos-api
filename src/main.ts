@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { ResponseInterceptor } from './core/global/interceptor';
+import { AllExceptionsFilter } from './core/global/filter';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -10,9 +12,17 @@ async function bootstrap() {
   // ? Pipes for validation
   app.useGlobalPipes(
     new ValidationPipe({
+      whitelist: true,
+      stopAtFirstError: true,
       transform: true,
     }),
   );
+
+  // ? Interceptor
+  app.useGlobalInterceptors(new ResponseInterceptor());
+
+  // ? Filter
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // ? Swagger Documentation
   const config = new DocumentBuilder()

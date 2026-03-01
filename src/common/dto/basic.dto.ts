@@ -16,6 +16,7 @@ export class IdDto {
   @ApiProperty({
     description: 'Id',
     required: true,
+    example: 1,
   })
   @Type(() => Number)
   @IsNumber()
