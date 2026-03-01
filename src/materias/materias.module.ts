@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { PlanesService } from './materias.service';
-import { PlanesController } from './materias.controller';
+import { MateriasController } from './materias.controller';
+import { MateriasService } from './materias.service';
 
 @Module({
-  controllers: [PlanesController],
-  providers: [PlanesService],
-  exports: [PlanesService],
+  controllers: [MateriasController],
+  providers: [MateriasService],
+  exports: [MateriasService],
 })
-export class PlanesModule {}
+export class MateriasModule {}

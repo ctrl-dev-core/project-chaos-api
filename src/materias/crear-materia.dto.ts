@@ -1,3 +1,4 @@
+// src/materias/dto/create-materia.dto.ts
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -7,12 +8,13 @@ import {
   MinLength,
   MaxLength,
   IsNumber,
+  Min,
 } from 'class-validator';
 
-export class CreatePlanDto {
+export class CreateMateriaDto {
   @ApiProperty({
-    description: 'Nombre del plan de estudio',
-    example: 'INGENIERIA DE SISTEMAS',
+    description: 'Nombre de la materia',
+    example: 'PROGRAMACION I',
     minLength: 3,
     maxLength: 100,
   })
@@ -24,14 +26,52 @@ export class CreatePlanDto {
   nombre: string;
 
   @ApiProperty({
-    description: 'Descripción del plan de estudio',
-    example: 'Plan de estudios actualizado 2023',
+    description: 'ID del plan al que pertenece',
+    example: 1,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  @Min(1)
+  id_plan: number;
+
+  @ApiProperty({
+    description: 'ID del semestre al que pertenece',
+    example: 1,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  @Min(1)
+  id_semestre: number;
+
+  @ApiProperty({
+    description: 'ID de la materia prerrequisito (opcional)',
+    example: null,
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Min(1)
+  id_prerrequisito?: number;
+
+  @ApiProperty({
+    description: 'Descripción de la materia',
+    example: 'Fundamentos de programación',
     required: false,
   })
   @IsString()
   @IsOptional()
   @MaxLength(255)
   descripcion?: string;
+
+  @ApiProperty({
+    description: 'Sigla de la materia',
+    example: 'INF-111',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  sigla: string;
 }
 
-export class UpdatePlanDto extends PartialType(CreatePlanDto) {}
+export class UpdateMateriaDto extends PartialType(CreateMateriaDto) {}

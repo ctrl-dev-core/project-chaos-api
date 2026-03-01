@@ -5,6 +5,7 @@ import { PlanesModule } from './planes/planes.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { DocentesModule } from './docentes/docente.module';
 import { SemestresModule } from './semestres/semestres.module';
+import { MateriasModule } from './materias/materias.module';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { SemestresModule } from './semestres/semestres.module';
     PlanesModule,
     SemestresModule,
     DocentesModule,
-    PlanesModule,
+    MateriasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

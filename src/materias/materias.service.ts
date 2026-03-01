@@ -1,40 +1,35 @@
-// src/planes/planes.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { Plan } from 'generated/prisma/client';
+import { Materia } from 'generated/prisma/client';
 import { Pagination } from 'src/common/types/pagination.types';
-import { CreatePlanDto, UpdatePlanDto } from './crear-materia.dto';
+import { CreateMateriaDto, UpdateMateriaDto } from './crear-materia.dto';
 
 @Injectable()
-export class PlanesService {
+export class MateriasService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createPlanDto: CreatePlanDto) {
-    const planes = await this.prisma.plan.findMany();
+  async create(createMateriaDto: CreateMateriaDto) {
+    const materias = await this.prisma.materia.findMany();
     return {
-      id_plan: planes.length + 1,
-      ...createPlanDto,
+      id_materia: materias.length + 1,
+      ...createMateriaDto,
     };
   }
 
-  async findAll(search: string): Promise<Plan[]> {
-    const response = await this.prisma.plan.findMany({
+  async findAll(search: string): Promise<Materia[]> {
+    const response = await this.prisma.materia.findMany({
       include: {
-        materias: {
+        plan: true,
+        semestre: true,
+        prerrequisito: true,
+        horarios: {
           include: {
-            semestre: true,
-            horarios: {
-              include: {
-                docente: true,
-              },
-            },
+            docente: true,
           },
         },
       },
-      orderBy: {
-        nombre: 'asc',
-      },
+      orderBy: [{ id_semestre: 'asc' }, { nombre: 'asc' }],
       where: {
         nombre: {
           contains: search,
@@ -45,7 +40,9 @@ export class PlanesService {
     return response;
   }
 
-  async findAllPaginated(pagination: PaginationDto): Promise<Pagination<Plan>> {
+  async findAllPaginated(
+    pagination: PaginationDto,
+  ): Promise<Pagination<Materia>> {
     const { page, size: limit, search } = pagination;
 
     const skip = (page - 1) * limit;
@@ -60,22 +57,23 @@ export class PlanesService {
       : {};
 
     const [data, total] = await this.prisma.$transaction([
-      this.prisma.plan.findMany({
+      this.prisma.materia.findMany({
         where,
         skip,
         take: limit,
         include: {
-          materias: {
+          plan: true,
+          semestre: true,
+          prerrequisito: true,
+          horarios: {
             include: {
-              semestre: true,
+              docente: true,
             },
           },
         },
-        orderBy: {
-          nombre: 'asc',
-        },
+        orderBy: [{ id_semestre: 'asc' }, { nombre: 'asc' }],
       }),
-      this.prisma.plan.count({ where }),
+      this.prisma.materia.count({ where }),
     ]);
 
     return {
@@ -89,109 +87,141 @@ export class PlanesService {
   }
 
   async findOne(id: number) {
-    const plan = await this.prisma.plan.findUnique({
-      where: { id_plan: id },
+    const materia = await this.prisma.materia.findUnique({
+      where: { id_materia: id },
       include: {
-        materias: {
+        plan: true,
+        semestre: true,
+        prerrequisito: true,
+        prerequisitos: {
           include: {
             semestre: true,
-            prerrequisito: true,
-            horarios: {
-              include: {
-                docente: true,
-              },
-            },
           },
-          orderBy: [{ id_semestre: 'asc' }, { nombre: 'asc' }],
+        },
+        horarios: {
+          include: {
+            docente: true,
+          },
+          orderBy: [{ dia: 'asc' }, { hora_inicio: 'asc' }],
         },
       },
     });
 
-    if (!plan) {
-      throw new NotFoundException(`Plan con ID ${id} no encontrado`);
+    if (!materia) {
+      throw new NotFoundException(`Materia con ID ${id} no encontrada`);
     }
 
-    return plan;
+    return materia;
   }
 
-  async update(id: number, _updatePlanDto: UpdatePlanDto) {
-    const plan: Plan | null = await this.prisma.plan.findFirst({
-      where: { id_plan: id },
+  async update(id: number, _updateMateriaDto: UpdateMateriaDto) {
+    const materia: Materia | null = await this.prisma.materia.findFirst({
+      where: { id_materia: id },
     });
 
-    if (!plan) {
-      throw new NotFoundException(`Plan con ID ${id} no encontrado`);
+    if (!materia) {
+      throw new NotFoundException(`Materia con ID ${id} no encontrada`);
     }
 
-    return plan;
+    return materia;
   }
 
   async remove(id: number) {
-    const plan: Plan | null = await this.prisma.plan.findFirst({
-      where: { id_plan: id },
+    const materia: Materia | null = await this.prisma.materia.findFirst({
+      where: { id_materia: id },
     });
 
-    if (!plan) {
-      throw new NotFoundException(`Plan con ID ${id} no encontrado`);
+    if (!materia) {
+      throw new NotFoundException(`Materia con ID ${id} no encontrada`);
     }
 
-    return plan;
+    return materia;
   }
 
-  async findMaterias(id: number) {
-    const plan = await this.prisma.plan.findUnique({
-      where: { id_plan: id },
+  async findByPlan(planId: number) {
+    const materias = await this.prisma.materia.findMany({
+      where: { id_plan: planId },
       include: {
-        materias: {
+        semestre: true,
+        prerrequisito: true,
+        horarios: {
           include: {
-            semestre: true,
-            prerrequisito: true,
-            horarios: {
-              include: {
-                docente: true,
-              },
-            },
+            docente: true,
           },
-          orderBy: [{ id_semestre: 'asc' }, { nombre: 'asc' }],
+        },
+      },
+      orderBy: [{ id_semestre: 'asc' }, { nombre: 'asc' }],
+    });
+
+    return materias;
+  }
+
+  async findBySemestre(semestreId: number) {
+    const materias = await this.prisma.materia.findMany({
+      where: { id_semestre: semestreId },
+      include: {
+        plan: true,
+        prerrequisito: true,
+        horarios: {
+          include: {
+            docente: true,
+          },
+        },
+      },
+      orderBy: {
+        nombre: 'asc',
+      },
+    });
+
+    return materias;
+  }
+
+  async findHorarios(id: number) {
+    const materia = await this.prisma.materia.findUnique({
+      where: { id_materia: id },
+      include: {
+        horarios: {
+          include: {
+            docente: true,
+          },
+          orderBy: [{ dia: 'asc' }, { hora_inicio: 'asc' }],
         },
       },
     });
 
-    if (!plan) {
-      throw new NotFoundException(`Plan con ID ${id} no encontrado`);
+    if (!materia) {
+      throw new NotFoundException(`Materia con ID ${id} no encontrada`);
     }
 
-    return plan.materias;
+    return materia.horarios;
   }
 
-  async findMateriasBySemestre(id: number, semestreId: number) {
-    const plan = await this.prisma.plan.findUnique({
-      where: { id_plan: id },
+  async findPrerrequisitos(id: number) {
+    const materia = await this.prisma.materia.findUnique({
+      where: { id_materia: id },
       include: {
-        materias: {
-          where: {
-            id_semestre: semestreId,
-          },
+        prerrequisito: {
           include: {
             semestre: true,
-            prerrequisito: true,
-            horarios: {
-              include: {
-                docente: true,
-              },
-            },
+            plan: true,
           },
-          orderBy: {
-            nombre: 'asc',
+        },
+        prerequisitos: {
+          include: {
+            semestre: true,
+            plan: true,
           },
         },
       },
     });
 
-    if (!plan) {
-      throw new NotFoundException(`Plan con ID ${id} no encontrado`);
+    if (!materia) {
+      throw new NotFoundException(`Materia con ID ${id} no encontrada`);
     }
 
-    return plan.materias;
+    return {
+      prerrequisito: materia.prerrequisito,
+      prerequisitos: materia.prerequisitos,
+    };
   }
 }

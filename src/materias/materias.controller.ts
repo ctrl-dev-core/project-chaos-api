@@ -1,4 +1,3 @@
-// src/planes/planes.controller.ts
 import {
   Controller,
   Get,
@@ -17,120 +16,144 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
+import { MateriasService } from './materias.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { IdDto } from 'src/common/dto/basic.dto';
-import { PlanesService } from './materias.service';
-import { CreatePlanDto, UpdatePlanDto } from './crear-materia.dto';
+import { CreateMateriaDto, UpdateMateriaDto } from './crear-materia.dto';
 
-@ApiTags('Planes')
-@Controller('planes')
-export class PlanesController {
-  constructor(private readonly planesService: PlanesService) {}
+@ApiTags('Materias')
+@Controller('materias')
+export class MateriasController {
+  constructor(private readonly materiasService: MateriasService) {}
 
   @Post()
   @ApiOperation({
-    summary: 'Crear un nuevo plan',
-    description: 'Registra un nuevo plan de estudio en el sistema',
+    summary: 'Crear una nueva materia',
+    description: 'Registra una nueva materia en el sistema',
   })
-  @ApiBody({ type: CreatePlanDto })
-  create(@Body() createPlanDto: CreatePlanDto) {
-    return this.planesService.create(createPlanDto);
+  @ApiBody({ type: CreateMateriaDto })
+  async create(@Body() createMateriaDto: CreateMateriaDto) {
+    return this.materiasService.create(createMateriaDto);
   }
 
   @Get()
   @ApiOperation({
-    summary: 'Obtener planes paginados',
-    description: 'Retorna una lista paginada de planes con sus materias',
+    summary: 'Obtener materias paginadas',
+    description: 'Retorna una lista paginada de materias',
   })
   @ApiQuery({
     name: 'search',
     required: false,
     type: String,
-    description: 'Texto para buscar por nombre del plan',
+    description: 'Texto para buscar por nombre de la materia',
   })
   async findAll(@Query('search') search?: string) {
-    return this.planesService.findAll(search || '');
+    return this.materiasService.findAll(search || '');
   }
 
   @Get('/pagination')
   @ApiOperation({
-    summary: 'Obtener todos los planes con paginación',
-    description:
-      'Retorna una lista completa de todos los planes con sus materias',
+    summary: 'Obtener todas las materias con paginación',
+    description: 'Retorna una lista completa de todas las materias',
   })
   async findAllList(@Query() pagination: PaginationDto) {
-    return this.planesService.findAllPaginated(pagination);
+    return this.materiasService.findAllPaginated(pagination);
   }
 
-  @Get(':id')
+  @Get('plan/:planId')
   @ApiOperation({
-    summary: 'Obtener un plan por ID',
-    description: 'Retorna un plan específico incluyendo todas sus materias',
+    summary: 'Obtener materias por plan',
+    description: 'Retorna todas las materias de un plan específico',
   })
   @ApiParam({
-    name: 'id',
+    name: 'planId',
     description: 'ID del plan',
     example: 1,
   })
-  findOne(@Param() params: IdDto) {
-    const { id } = params;
-    return this.planesService.findOne(id);
+  async findByPlan(@Param('planId', ParseIntPipe) planId: number) {
+    return this.materiasService.findByPlan(planId);
   }
 
-  @Get(':id/materias')
+  @Get('semestre/:semestreId')
   @ApiOperation({
-    summary: 'Obtener las materias de un plan',
-    description: 'Retorna todas las materias asignadas a un plan específico',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'ID del plan',
-    example: 1,
-  })
-  findMaterias(@Param('id', ParseIntPipe) id: number) {
-    return this.planesService.findMaterias(id);
-  }
-
-  @Get(':id/materias/semestre/:semestreId')
-  @ApiOperation({
-    summary: 'Obtener materias de un plan por semestre',
-    description: 'Retorna las materias de un plan filtradas por semestre',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'ID del plan',
-    example: 1,
+    summary: 'Obtener materias por semestre',
+    description: 'Retorna todas las materias de un semestre específico',
   })
   @ApiParam({
     name: 'semestreId',
     description: 'ID del semestre',
     example: 1,
   })
-  findMateriasBySemestre(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('semestreId', ParseIntPipe) semestreId: number,
-  ) {
-    return this.planesService.findMateriasBySemestre(id, semestreId);
+  async findBySemestre(@Param('semestreId', ParseIntPipe) semestreId: number) {
+    return this.materiasService.findBySemestre(semestreId);
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Obtener una materia por ID',
+    description: 'Retorna una materia específica con todos sus detalles',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID de la materia',
+    example: 1,
+  })
+  async findOne(@Param() params: IdDto) {
+    const { id } = params;
+    return this.materiasService.findOne(id);
+  }
+
+  @Get(':id/horarios')
+  @ApiOperation({
+    summary: 'Obtener los horarios de una materia',
+    description:
+      'Retorna todos los horarios asignados a una materia específica',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID de la materia',
+    example: 1,
+  })
+  async findHorarios(@Param('id', ParseIntPipe) id: number) {
+    return this.materiasService.findHorarios(id);
+  }
+
+  @Get(':id/prerrequisitos')
+  @ApiOperation({
+    summary: 'Obtener los prerrequisitos de una materia',
+    description:
+      'Retorna el prerrequisito y las materias que tienen esta como prerrequisito',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID de la materia',
+    example: 1,
+  })
+  async findPrerrequisitos(@Param('id', ParseIntPipe) id: number) {
+    return this.materiasService.findPrerrequisitos(id);
   }
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'Actualizar un plan',
-    description: 'Actualiza los datos de un plan existente',
+    summary: 'Actualizar una materia',
+    description: 'Actualiza los datos de una materia existente',
   })
-  @ApiBody({ description: 'Datos del plan', type: UpdatePlanDto })
-  update(@Param() params: IdDto, @Body() updatePlanDto: UpdatePlanDto) {
+  @ApiBody({ description: 'Datos de la materia', type: UpdateMateriaDto })
+  async update(
+    @Param() params: IdDto,
+    @Body() updateMateriaDto: UpdateMateriaDto,
+  ) {
     const { id } = params;
-    return this.planesService.update(id, updatePlanDto);
+    return this.materiasService.update(id, updateMateriaDto);
   }
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Eliminar un plan',
-    description: 'Elimina un plan del sistema',
+    summary: 'Eliminar una materia',
+    description: 'Elimina una materia del sistema',
   })
-  remove(@Param() params: IdDto) {
+  async remove(@Param() params: IdDto) {
     const { id } = params;
-    return this.planesService.remove(id);
+    return this.materiasService.remove(id);
   }
 }
