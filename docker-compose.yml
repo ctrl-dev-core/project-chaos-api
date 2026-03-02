@@ -1,15 +1,15 @@
 services:
-  db:
-    image: postgres:16-alpine
-    container_name: chaos_db
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password123
-      POSTGRES_DB: chaos_api_db
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DATABASE_URL: file:/app/database/database.db
     ports:
-      - "5432:5432"
+      - '3000:3000'
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/database/database.db
     volumes:
-      - chaos_data:/var/lib/postgresql/data
-
-volumes:
-  chaos_data:
+      - ./database:/app/database
